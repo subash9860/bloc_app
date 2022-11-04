@@ -1,11 +1,11 @@
-import 'package:bloc_app/fetch_result.dart';
-import 'package:bloc_app/load_action.dart';
+import 'package:bloc_app/api_call.dart';
+import 'package:bloc_app/bloc_action.dart';
 import 'package:bloc_app/person_bloc.dart';
-import 'package:bloc_app/url.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'subscript_extension.dart';
+
+import 'dart:developer';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -20,9 +20,11 @@ class HomePage extends StatelessWidget {
         children: [
           TextButton(
             onPressed: () {
+              log("Get person 1", name: "on pressed 1");
               context.read<PersonBloc>().add(
                     const LoadPersonAction(
-                      url: PersonUrl.person1,
+                      url: person1Url,
+                      loader: getPersons,
                     ),
                   );
             },
@@ -30,9 +32,12 @@ class HomePage extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
+              log("Get person 2", name: "on pressed 2");
+
               context.read<PersonBloc>().add(
                     const LoadPersonAction(
-                      url: PersonUrl.person2,
+                      url: person2Url,
+                      loader: getPersons,
                     ),
                   );
             },
@@ -43,8 +48,8 @@ class HomePage extends StatelessWidget {
               return previousResult?.persons != currentResult?.persons;
             },
             builder: (context, fetchResult) {
-              fetchResult?.log();
-
+              log(fetchResult?.persons.toString() ?? "not fetch",
+                  name: "fetch form screen");
               final persons = fetchResult?.persons;
               if (persons == null) {
                 return const SizedBox();
